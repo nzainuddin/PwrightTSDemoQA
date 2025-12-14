@@ -11,13 +11,14 @@ export class RegistrationPage {
    readonly dateOfBirthDatePicker: Locator;
    readonly subjectsInput: Locator;
    readonly hobbiesCBox: Locator;
+   readonly pictureUploadLabel: Locator;
    readonly pictureUploadInput: Locator;
    readonly addressTextArea: Locator;
    readonly stateDropdown: Locator;
    readonly cityDropdown: Locator;
    readonly submitBtn: Locator;
 
-   constructor(page: Page) {
+    constructor(page: Page) {
        this.page = page;
        this.firstnameInput = page.getByPlaceholder("First Name");
        this.lastnameInput = page.getByPlaceholder("Last Name");
@@ -27,18 +28,19 @@ export class RegistrationPage {
        this.dateOfBirthDatePicker = page.getByLabel("Date of Birth");
        this.subjectsInput = page.locator("#subjectsInput");
        this.hobbiesCBox = page.getByLabel("Hobbies");
+       this.pictureUploadLabel = page.locator("label.form-file-label");
        this.pictureUploadInput = page.locator("input#uploadPicture");
        this.addressTextArea = page.locator("#currentAddress");
        this.stateDropdown = page.getByText("Select State");
        this.cityDropdown = page.locator("#city");
        this.submitBtn = page.getByRole('button', { name: 'Submit' });
-   }
+    }
 
-   async visit() {
+    async visit() {
         await this.page.goto('/automation-practice-form');
-   }
+    }
 
-   async fillMandatoryFields() {
+    async fillMandatoryFields() {
         await this.firstnameInput.fill("John");
         await this.lastnameInput.fill("Doe");
         await this.page.getByText('Male', { exact: true }).click();
@@ -54,13 +56,10 @@ export class RegistrationPage {
             IMAGE_DIR, 
             IMAGE_FILENAME
         );
-        const VISIBLE_TRIGGER_SELECTOR = 'label.form-file-label';
-        const triggerLocator = this.page.locator(VISIBLE_TRIGGER_SELECTOR);
-        await triggerLocator.waitFor({ state: 'visible', timeout: 15000 });
-
+        await this.pictureUploadLabel.waitFor({ state: 'visible', timeout: 15000 });
         const [fileChooser] = await Promise.all([
             this.page.waitForEvent('filechooser', { timeout: 15000 }),
-            triggerLocator.click({ timeout: 10000 })
+            this.pictureUploadLabel.click({ timeout: 10000 })
         ]);
         await fileChooser.setFiles(ABSOLUTE_IMAGE_PATH);
         console.log(`✅ Success! 📁 File uploaded and form submitted.`);

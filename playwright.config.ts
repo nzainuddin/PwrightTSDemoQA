@@ -13,15 +13,30 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  timeout: 120_000,
   fullyParallel: true,
+  timeout: 120_000,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [
+    ['html', { 
+      outputFolder: 'reports/html',
+      open: 'never' 
+    }],
+    ['json', { 
+      outputFile: 'reports/json/test-results.json' 
+    }],
+    ['junit', { 
+      outputFile: 'reports/junit/results.xml' 
+    }],
+    ['list'],
+    // GitHub Actions reporter
+    process.env.CI ? ['github'] : ['line'],
+  ],
   use: {
-    baseURL: 'https://demoqa.com',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     // -------------------------------------------------------------------
@@ -30,17 +45,25 @@ export default defineConfig({
     {
       name: 'boostore-app-chrome',
       testDir: './bookstore/tests/ui',
+      outputDir: 'test-results/bookstore-chrome',
       use: { 
         ...devices['Desktop Chrome'],
-        baseURL: 'http://localhost:3001', // App 1's distinct server port
+        baseURL: 'https://demoqa.com',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
+        trace: 'retain-on-failure'
       },
     },
     {
       name: 'boostore-app-firefox',
-      testDir: './bookstore/tests/ui', // Use the same test files
+      testDir: './bookstore/tests/ui',
+      outputDir: 'test-results/bookstore-firefox',
       use: {
         ...devices['Desktop Firefox'],
-        baseURL: 'http://localhost:3002',
+        baseURL: 'https://demoqa.com',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
+        trace: 'retain-on-failure'
       },
     },
 
@@ -50,26 +73,32 @@ export default defineConfig({
     {
       name: 'student-app-chrome',
       testDir: './student/tests/ui',
+      outputDir: 'test-results/student-chrome',
       use: {
         launchOptions: {
           args: ['--disable-site-isolation-trials'], 
       },
         ...devices['Desktop Chrome'],
         baseURL: 'https://demoqa.com',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
         trace: 'on-first-retry',
       }
     },
     {
       name: 'student-app-firefox',
       testDir: './student/tests/ui',
+      outputDir: 'test-results/student-firefox',
       use: {
         ...devices['Desktop Firefox'],
         baseURL: 'https://demoqa.com',
-        trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
+        trace: 'on-first-retry'
       },
     },
   ],
-  
+
     /* Test against branded browsers. */
     // {
     //   name: 'Microsoft Edge',

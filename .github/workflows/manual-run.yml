@@ -1,0 +1,101 @@
+name: Manual Test Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Select project to test'
+        required: true
+        type: choice
+        options:
+          - bookstore
+          - student
+          - both
+      browser:
+        description: 'Select browser'
+        required: true
+        type: choice
+        options:
+          - chrome
+          - firefox
+          - both
+      test_path:
+        description: 'Specific test file (optional, e.g., bookstore/tests/ui/login.spec.ts)'
+        required: false
+        type: string
+
+jobs:
+  test:
+    name: Run Tests - ${{ inputs.project }} - ${{ inputs.browser }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Run Bookstore Chrome tests
+        if: (inputs.project == 'bookstore' || inputs.project == 'both') && (inputs.browser == 'chrome' || inputs.browser == 'both')
+        run: |
+          if [ -n "${{ inputs.test_path }}" ]; then
+            npx playwright test ${{ inputs.test_path }} --project=boostore-app-chrome
+          else
+            npx playwright test --project=boostore-app-chrome
+          fi
+
+      - name: Run Bookstore Firefox tests
+        if: (inputs.project == 'bookstore' || inputs.project == 'both') && (inputs.browser == 'firefox' || inputs.browser == 'both')
+        run: |
+          if [ -n "${{ inputs.test_path }}" ]; then
+            npx playwright test ${{ inputs.test_path }} --project=boostore-app-firefox
+          else
+            npx playwright test --project=boostore-app-firefox
+          fi
+
+      - name: Run Student Chrome tests
+        if: (inputs.project == 'student' || inputs.project == 'both') && (inputs.browser == 'chrome' || inputs.browser == 'both')
+        run: |
+          if [ -n "${{ inputs.test_path }}" ]; then
+            npx playwright test ${{ inputs.test_path }} --project=student-app-chrome
+          else
+            npx playwright test --project=student-app-chrome
+          fi
+
+      - name: Run Student Firefox tests
+        if: (inputs.project == 'student' || inputs.project == 'both') && (inputs.browser == 'firefox' || inputs.browser == 'both')
+        run: |
+          if [ -n "${{ inputs.test_path }}" ]; then
+            npx playwright test ${{ inputs.test_path }} --project=student-app-firefox
+          else
+            npx playwright test --project=student-app-firefox
+          fi
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-test-results-${{ inputs.project }}-${{ inputs.browser }}-${{ github.run_number }}
+          path: |
+            reports/
+            test-results/
+          retention-days: 7
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-html-report-${{ inputs.project }}-${{ inputs.browser }}-${{ github.run_number }}
+          path: playwright-report/
+          retention-days: 7

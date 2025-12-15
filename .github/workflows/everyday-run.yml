@@ -1,0 +1,114 @@
+name: Everyday Run
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every day (adjust timezone as needed)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  test-bookstore:
+    name: Bookstore App Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Run Bookstore tests - Chrome
+        run: npx playwright test --project=boostore-app-chrome
+        continue-on-error: true
+
+      - name: Run Bookstore tests - Firefox
+        run: npx playwright test --project=boostore-app-firefox
+        continue-on-error: true
+
+      - name: Upload Bookstore test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookstore-test-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+      - name: Upload Bookstore HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookstore-html-report
+          path: playwright-report/
+          retention-days: 30
+
+  test-student:
+    name: Student App Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Run Student tests - Chrome
+        run: npx playwright test --project=student-app-chrome
+        continue-on-error: true
+
+      - name: Run Student tests - Firefox
+        run: npx playwright test --project=student-app-firefox
+        continue-on-error: true
+
+      - name: Upload Student test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: student-test-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+      - name: Upload Student HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: student-html-report
+          path: playwright-report/
+          retention-days: 30
+
+  notify:
+    name: Send Notification
+    needs: [test-bookstore, test-student]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Check test results
+        run: |
+          echo "Bookstore tests: ${{ needs.test-bookstore.result }}"
+          echo "Student tests: ${{ needs.test-student.result }}"

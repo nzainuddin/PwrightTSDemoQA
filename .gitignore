@@ -1,8 +1,64 @@
 
-# Playwright
+# ==========================================
+# Node.js Dependencies
+# ==========================================
 node_modules/
-/test-results/
-/playwright-report/
+npm-debug.log*
+
+# ==========================================
+# Playwright
+# ==========================================
+test-results/
+test-results/bookstore-chrome/
+test-results/bookstore-firefox/
+test-results/student-chrome/
+test-results/student-firefox/
+
+playwright-report/
+!reports/bookstore/html/
+!reports/student/html/
+reports/combined/
+reports/bookstore/json/
+reports/student/json/
+reports/bookstore/junit/
+reports/student/junit/
 /blob-report/
+
 /playwright/.cache/
 /playwright/.auth/
+
+**/screenshots/
+**/videos/
+**/traces/
+
+# ==========================================
+# Build Output
+# ==========================================
+dist/
+build/
+out/
+
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.local
+.env.dev
+.env.stage
+*.key
+*.pem
+secrets.json
+
+# ==========================================
+# IDE
+# ==========================================
+.vscode/*
+
+# ==========================================
+# Temporary Files
+# ==========================================
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/

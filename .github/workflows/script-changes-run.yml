@@ -1,0 +1,136 @@
+name: Tests on File Changes
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    name: Detect Changed Files
+    runs-on: ubuntu-latest
+    outputs:
+      bookstore: ${{ steps.filter.outputs.bookstore }}
+      student: ${{ steps.filter.outputs.student }}
+      shared: ${{ steps.filter.outputs.shared }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check changed files
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            bookstore:
+              - 'bookstore/**'
+              - 'shared/**'
+              - 'package.json'
+              - 'playwright.config.ts'
+            student:
+              - 'student/**'
+              - 'shared/**'
+              - 'package.json'
+              - 'playwright.config.ts'
+            shared:
+              - 'shared/**'
+
+  test-bookstore:
+    name: Bookstore App Tests
+    needs: detect-changes
+    if: needs.detect-changes.outputs.bookstore == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Run Bookstore tests
+        run: npx playwright test --project=boostore-app-chrome --project=boostore-app-firefox
+
+      - name: Upload Bookstore test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookstore-test-results-${{ github.sha }}
+          path: |
+            reports/bookstore/
+            test-results/
+          retention-days: 7
+
+  test-student:
+    name: Student App Tests
+    needs: detect-changes
+    if: needs.detect-changes.outputs.student == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Run Student tests
+        run: npx playwright test --project=student-app-chrome --project=student-app-firefox
+
+      - name: Upload Student test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: student-test-results-${{ github.sha }}
+          path: |
+            reports/student/
+            test-results/
+          retention-days: 7
+
+  notify-pr:
+    name: PR Comment with Results
+    needs: [test-bookstore, test-student]
+    if: github.event_name == 'pull_request' && always()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const bookstoreResult = '${{ needs.test-bookstore.result }}';
+            const studentResult = '${{ needs.test-student.result }}';
+            
+            let message = '## 🧪 Test Results\n\n';
+            message += `- **Bookstore Tests**: ${bookstoreResult === 'success' ? '✅ Passed' : bookstoreResult === 'skipped' ? '⏭️ Skipped' : '❌ Failed'}\n`;
+            message += `- **Student Tests**: ${studentResult === 'success' ? '✅ Passed' : studentResult === 'skipped' ? '⏭️ Skipped' : '❌ Failed'}\n`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });

@@ -1,0 +1,36 @@
+{
+  "name": "vistraassignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install:browsers": "playwright install",
+    "install:student-browsers": "playwright install --with-deps chromium firefox",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:ci": "playwright test --forbid-only --max-failures 5",
+    "test:fast": "playwright test -j 4",
+    "test:bookstore": "playwright test --project=boostore-app-chrome --project=boostore-app-firefox -j 4",
+    "test:student": "playwright test --project=student-app-chrome --project=student-app-firefox -j 4", 
+    "test:student:chrome": "playwright test --project=student-app-chrome",
+    "test:student:firefox": "playwright test --project=student-app-firefox",
+    "test:chrome": "playwright test --project=bookstore-app-chrome --project=student-app-chrome",
+    "test:firefox": "playwright test --project=boostore-app-firefox --project=student-app-firefox"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nzainuddin/VistraAssignment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nzainuddin/VistraAssignment/issues"
+  },
+  "homepage": "https://github.com/nzainuddin/VistraAssignment#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.2"
+  }
+}

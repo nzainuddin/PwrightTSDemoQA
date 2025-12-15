@@ -1,0 +1,46 @@
+<testsuites id="" name="" tests="1" failures="1" skipped="0" errors="0" time="6.140871999999974">
+<testsuite name="..\bookstore\tests\ui\bookstore.spec.ts" timestamp="2025-12-15T15:16:09.066Z" hostname="bookstore-app-chrome" tests="1" failures="1" skipped="0" time="2.996" errors="0">
+<testcase name="Successfully remove books" classname="..\bookstore\tests\ui\bookstore.spec.ts" time="2.996">
+<failure message="bookstore.spec.ts:3:5 Successfully remove books" type="FAILURE">
+<![CDATA[  [bookstore-app-chrome] › ..\bookstore\tests\ui\bookstore.spec.ts:3:5 › Successfully remove books ─
+
+    Error: page.goto: Test ended.
+    Call log:
+      - navigating to "https://demoqa.com/books", waiting until "load"
+
+
+       at ..\bookstore\src\ui\pages\LoginPage.ts:17
+
+      15 |
+      16 |     async login(username: string, password: string) {
+    > 17 |         await this.page.goto('/books');
+         |                         ^
+      18 |         // await this.userNameInput.fill(username);
+      19 |         // await this.passwordInput.fill(password);
+      20 |         // await this.loginButton.click();
+        at LoginPage.login (C:\Users\user\Automation Project\VistraTask\VistraAssignment\bookstore\src\ui\pages\LoginPage.ts:17:25)
+        at C:\Users\user\Automation Project\VistraTask\VistraAssignment\bookstore\tests\ui\bookstore.spec.ts:4:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\bookstore-chrome\bookstore-Successfully-remove-books-bookstore-app-chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\test-results\bookstore-chrome\bookstore-Successfully-remove-books-bookstore-app-chrome\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\test-results\bookstore-chrome\bookstore-Successfully-remove-books-bookstore-app-chrome\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\test-results\bookstore-chrome\bookstore-Successfully-remove-books-bookstore-app-chrome\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\test-results\bookstore-chrome\bookstore-Successfully-remove-books-bookstore-app-chrome\trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

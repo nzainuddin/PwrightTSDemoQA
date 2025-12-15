@@ -13,10 +13,11 @@ export class LoginPage {
        this.loginButton = page.locator('button#login');
     }
 
-    async login(username: string, password: string) {
-        await this.userNameInput.fill(username);
-        await this.passwordInput.fill(password);
-        await this.loginButton.click();
+    async login() {
+        await this.page.goto('/books');
+        // await this.userNameInput.fill(username);
+        // await this.passwordInput.fill(password);
+        // await this.loginButton.click();
     }
 
     

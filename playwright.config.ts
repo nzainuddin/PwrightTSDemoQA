@@ -43,7 +43,7 @@ export default defineConfig({
     //                       Configuration: Bookstore App
     // -------------------------------------------------------------------
     {
-      name: 'boostore-app-chrome',
+      name: 'bookstore-app-chrome',
       testDir: './bookstore/tests/ui',
       outputDir: 'test-results/bookstore-chrome',
       use: { 
@@ -55,7 +55,7 @@ export default defineConfig({
       },
     },
     {
-      name: 'boostore-app-firefox',
+      name: 'bookstore-app-firefox',
       testDir: './bookstore/tests/ui',
       outputDir: 'test-results/bookstore-firefox',
       use: {

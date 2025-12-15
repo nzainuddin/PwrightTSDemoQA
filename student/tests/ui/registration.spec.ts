@@ -1,4 +1,4 @@
-import { test } from '../../src/common/fixtures';
+import { test } from '../../../fixtures/fixtures';
 
 test('Submit registration form having only mandatory details', async ({ registrationPage }) => {
   await registrationPage.visit();

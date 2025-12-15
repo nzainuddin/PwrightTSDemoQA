@@ -1,10 +1,17 @@
 import { test as base } from '@playwright/test';
 import { RegistrationPage } from '../student/src/pages/RegistrationPage';
+import { BookStoreAPI } from '../bookstore/src/api/BookStoreAPI';
 import { LoginPage as BookStoreLoginPage } from '../bookstore/src/ui/pages/LoginPage';
+import { ProfilePage } from '../bookstore/src/ui/pages/ProfilePage';
 
 type CustomFixtures = {
+  bookstoreAPI: BookStoreAPI;
   registrationPage: RegistrationPage;
   bookstoreLoginPage: BookStoreLoginPage;
+  bookstorePages: {
+    loginPage: BookStoreLoginPage;
+    profilePage: ProfilePage;
+  };
 };
 
 export const test = base.extend<CustomFixtures>({
@@ -13,35 +20,27 @@ export const test = base.extend<CustomFixtures>({
     await use(registrationPage);
   },
 
-  bookstoreLoginPage: async ({ page, request }, use) => {
+  bookstoreAPI: async ({ request }, use) => {
+      const bookstoreAPI = new BookStoreAPI(request);
+      await use(bookstoreAPI);
+  },
+
+  bookstorePages: async ({ page }, use) => {
+    const loginPage = new BookStoreLoginPage(page);
+    const profilePage = new ProfilePage(page);
+    await use({ loginPage, profilePage });
+  },
+
+  bookstoreLoginPage: async ({ page, bookstoreAPI }, use) => {
     const loginBookStorePage = new BookStoreLoginPage(page);
-    const registerUser = await request.post('/Account/v1/User', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      data: { userName: "Harry", password: "Harrington005$" }
-    });
-    const { userID } = await registerUser.json();
-
-
-    const getBooksResponse = await request.get('/BookStore/v1/Books');
-    const booksResult = await getBooksResponse.json();
-    const bookISBN = booksResult.books
-        .find((book: { title: string }) => book.title === 'Git Pocket Guide')?.isbn || null;
-
-
-    const addBooksToUser = await request.post('/BookStore/v1/Books', {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: {
-        userId: userID,
-        collectionOfIsbns: [{ isbn: bookISBN }]
-      }
-    });
-
-  
+    const username = 'HARRY', password = 'Harrington@12345';
+    
+    const userID = await bookstoreAPI.registerUser(username, password);
+    const token = await bookstoreAPI.generateToken(username, password);
+    const isbn = await bookstoreAPI.getBookISBN('Git Pocket Guide') ?? '';
+    // Add books
+    if (isbn) await bookstoreAPI.addBookToUser(username, password, userID, token, isbn);
+    await loginBookStorePage.login(username, password);
     await use(loginBookStorePage);
   }
 });

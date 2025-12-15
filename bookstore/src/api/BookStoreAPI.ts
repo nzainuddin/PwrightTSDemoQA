@@ -1,11 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
 
-interface UserData {
-  userID: string;
-  token: string;
-  username: string;
-}
-
 export class BookStoreAPI {
   private request: APIRequestContext;
 
@@ -13,18 +7,21 @@ export class BookStoreAPI {
     this.request = requestContext
   }
 
-  async createBasicAuthHeader(username: string, password: string): Promise<string> {
+  createBasicAuthHeader(username: string, password: string): string {
     const credentials = `${username}:${password}`;
-    // Base64 encode the credentials string
     return `Basic ${Buffer.from(credentials).toString('base64')}`;
-}
+  }
 
-  async registerUser(username: string, password: string): Promise<{ userID: string }> {
+  async registerUser(username: string, password: string): Promise<string> {
     const registerResponse = await this.request.post('/Account/v1/User', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       data: { userName: username, password: password },
     });
     const { userID } = await registerResponse.json();
-    return { userID };
+    return userID;
   }
 
   async generateToken(username: string, password: string): Promise<string> {
@@ -42,10 +39,10 @@ export class BookStoreAPI {
         .find((book: { title: string }) => book.title === title)?.isbn || null;
   }
 
-  async addBookToUser(userID: string, token: string, isbn: string): Promise<void> {
+  async addBookToUser(username: string, password: string, userID: string, token: string, isbn: string): Promise<void> {
     await this.request.post('/BookStore/v1/Books', {
       headers: { 
-        authorization: createBasicAuthHeader(),
+        authorization: this.createBasicAuthHeader(username, password),
         Authorization: `Bearer ${token}` 
     },
       data: {

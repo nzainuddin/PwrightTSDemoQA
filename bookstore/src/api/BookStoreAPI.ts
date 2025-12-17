@@ -52,12 +52,8 @@ export class BookStoreAPI {
       method: 'POST',
       url: '/Account/v1/User',
       data: { userName: this.username, password: this.password },
-      // customHeaders: { 'Authorization': await this.generateToken() },
       useAuth: false
     });
-    console.log(await registerResponse.headers());
-    console.log(await registerResponse.body());
-    console.log(await registerResponse.json());
     const { userID } = await registerResponse.json();
     return userID;
   }
@@ -69,17 +65,20 @@ export class BookStoreAPI {
       data: { userName: this.username, password: this.password },
       useAuth: false
     });
-    console.log(await tokenResponse.json())
     const { token } = await tokenResponse.json();
     return token;
   }
   
-  // async getBookISBN(title: string): Promise<string | null> {
-  //   const getBooksResponse = await this.request.get('/BookStore/v1/Books');
-  //   const booksResult = await getBooksResponse.json();
-  //   return booksResult.books
-  //       .find((book: { title: string }) => book.title === title)?.isbn || null;
-  // }
+  async getBookISBN(title: string): Promise<string | null> {
+    const getBooksResponse = await this.execute({
+      method: 'GET',
+      url: '/BookStore/v1/Books',
+      useAuth: true
+    });
+    const booksResult = await getBooksResponse.json();
+    return booksResult.books
+        .find((book: { title: string }) => book.title === title)?.isbn || null;
+  }
 
 
   // async getBooksISBN(titles: string[]): Promise<string[]> {

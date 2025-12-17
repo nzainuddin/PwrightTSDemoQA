@@ -1,16 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+(!process.env.BOOKSTORE_USERNAME) ?
+  console.error('❌ ERROR: .env file not found or BOOKSTORE_USERNAME is missing!') :
+  console.log('✅ Environment variables loaded successfully.');
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -48,7 +45,7 @@ export default defineConfig({
       outputDir: 'test-results/bookstore-chrome',
       use: { 
         ...devices['Desktop Chrome'],
-        baseURL: 'https://demoqa.com',
+        baseURL: process.env.BOOKSTORE_BASE_URL!,
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
         trace: 'retain-on-failure'
@@ -60,7 +57,7 @@ export default defineConfig({
       outputDir: 'test-results/bookstore-firefox',
       use: {
         ...devices['Desktop Firefox'],
-        baseURL: 'https://demoqa.com',
+        baseURL: process.env.BOOKSTORE_BASE_URL!,
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
         trace: 'retain-on-failure'

@@ -30,10 +30,16 @@ jobs:
 
       - name: Run Bookstore tests - Chrome
         run: npx playwright test --project=boostore-app-chrome
+        BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
+        BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
+        BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
         continue-on-error: true
 
       - name: Run Bookstore tests - Firefox
         run: npx playwright test --project=boostore-app-firefox
+        BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
+        BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
+        BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
         continue-on-error: true
 
       - name: Upload Bookstore test results

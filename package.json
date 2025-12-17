@@ -11,7 +11,7 @@
     "test:ci": "playwright test --forbid-only --max-failures 5",
     "test:fast": "playwright test -j 4",
     "test:bookstore": "playwright test --project=boostore-app-chrome --project=boostore-app-firefox -j 4",
-    "test:student": "playwright test --project=student-app-chrome --project=student-app-firefox -j 4", 
+    "test:student": "playwright test --project=student-app-chrome --project=student-app-firefox -j 4",
     "test:student:chrome": "playwright test --project=student-app-chrome",
     "test:student:firefox": "playwright test --project=student-app-firefox",
     "test:chrome": "playwright test --project=bookstore-app-chrome --project=student-app-chrome",
@@ -31,6 +31,7 @@
   "homepage": "https://github.com/nzainuddin/VistraAssignment#readme",
   "devDependencies": {
     "@playwright/test": "^1.57.0",
-    "@types/node": "^25.0.2"
+    "@types/node": "^25.0.2",
+    "dotenv": "^17.2.3"
   }
 }

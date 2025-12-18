@@ -62,9 +62,10 @@ jobs:
         run: npx playwright install --with-deps chromium firefox
 
       - name: Run Bookstore tests
-        BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
-        BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
-        BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
+        env:
+          BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
+          BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
+          BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
         run: npx playwright test --project=boostore-app-chrome --project=boostore-app-firefox
 
       - name: Upload Bookstore test results

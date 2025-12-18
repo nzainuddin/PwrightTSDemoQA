@@ -47,9 +47,10 @@ jobs:
         run: npx playwright install --with-deps chromium firefox
 
       - name: Run Bookstore Chrome tests
-        BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
-        BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
-        BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
+        env:
+          BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
+          BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
+          BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
         if: (inputs.project == 'bookstore' || inputs.project == 'both') && (inputs.browser == 'chrome' || inputs.browser == 'both')
         run: |
           if [ -n "${{ inputs.test_path }}" ]; then
@@ -59,9 +60,10 @@ jobs:
           fi
 
       - name: Run Bookstore Firefox tests
-        BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
-        BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
-        BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
+        env:
+          BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
+          BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
+          BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
         if: (inputs.project == 'bookstore' || inputs.project == 'both') && (inputs.browser == 'firefox' || inputs.browser == 'both')
         run: |
           if [ -n "${{ inputs.test_path }}" ]; then

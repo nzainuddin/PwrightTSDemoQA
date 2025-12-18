@@ -42,7 +42,16 @@ export class BookStoreAPI {
       url: '/BookStore/v1/Books',
       data: { userId, collectionOfIsbns: isbns.map(isbn => ({ isbn })) }
     });
-    
+    expect(response.status()).toBe(201);
+    return response.json();
+  }
+
+  async addBook(userId: string, isbn: string) {
+    const response = await this.execute({
+      method: 'POST',
+      url: '/BookStore/v1/Books',
+      data: { userId, collectionOfIsbns: [{ isbn: isbn }] }
+    });
     expect(response.status()).toBe(201);
     return response.json();
   }
@@ -70,52 +79,28 @@ export class BookStoreAPI {
   }
   
   async getBookISBN(title: string): Promise<string | null> {
+    const getBookResponse = await this.execute({
+      method: 'GET',
+      url: '/BookStore/v1/Books',
+      useAuth: true
+    });
+    const bookResult = await getBookResponse.json();
+    return bookResult.books
+        .find((book: { title: string }) => book.title === title)?.isbn || null;
+  }
+
+  async getBooksISBN(titles: string[]): Promise<string[]> {
     const getBooksResponse = await this.execute({
       method: 'GET',
       url: '/BookStore/v1/Books',
       useAuth: true
     });
     const booksResult = await getBooksResponse.json();
-    return booksResult.books
-        .find((book: { title: string }) => book.title === title)?.isbn || null;
+    const allBooks = booksResult.books;
+    const isbns = titles.map((targetTitle) => {
+      const matchingBook = allBooks.find((book: { title: string }) => book.title === targetTitle);
+      return matchingBook?.isbn || '';
+    });
+    return isbns;
   }
-
-
-  // async getBooksISBN(titles: string[]): Promise<string[]> {
-  //   const getBooksResponse = await this.request.get('/BookStore/v1/Books');
-  //   const booksResult = await getBooksResponse.json();
-  //   const allBooks = booksResult.books;
-
-  //   const isbns = titles.map((targetTitle) => {
-  //       const matchingBook = allBooks.find(
-  //           (book: { title: string }) => book.title === targetTitle
-  //       );
-  //       return matchingBook?.isbn || '';
-  //   });
-  //   return isbns;
-  // }
-
-  // async addBooksToUser(username: string, password: string, userID: string, token: string, isbns: string[]): Promise<void> {
-  //   const collectionOfIsbns = isbns.map(isbn => ({ isbn: isbn }));
-  //   const addBooks = await this.request.post('/BookStore/v1/Books', {
-  //     headers: { 
-  //       authorization: this.createBasicAuthHeader(username, password),
-  //       Authorization: `Bearer ${token}` 
-  //     },
-  //     data: { userId: userID, collectionOfIsbns: collectionOfIsbns },
-  //   });
-  //   (addBooks.status() === 201) ? console.log(`Successfully added ${isbns.length} books for user ${userID}.`) :
-  //     console.error(`Failed to add books. Status: ${addBooks.status()}`);
-  // }
-
-
-  // async addBookToUser(username: string, password: string, userID: string, token: string, isbn: string): Promise<void> {
-  //   await this.request.post('/BookStore/v1/Books', {
-  //     headers: { 
-  //       authorization: this.createBasicAuthHeader(username, password),
-  //       Authorization: `Bearer ${token}` 
-  //   },
-  //     data: { userId: userID, collectionOfIsbns: [{ isbn: isbn }] },
-  //   });
-  // }
 }

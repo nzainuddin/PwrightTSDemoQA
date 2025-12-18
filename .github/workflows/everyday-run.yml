@@ -29,7 +29,7 @@ jobs:
         run: npx playwright install --with-deps chromium firefox
 
       - name: Run Bookstore tests - Chrome
-        run: npx playwright test --project=boostore-app-chrome
+        run: npx playwright test --project=bookstore-app-chrome
         env:
           BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
           BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
@@ -37,7 +37,7 @@ jobs:
         continue-on-error: true
 
       - name: Run Bookstore tests - Firefox
-        run: npx playwright test --project=boostore-app-firefox
+        run: npx playwright test --project=bookstore-app-firefox
         env:
           BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
           BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}

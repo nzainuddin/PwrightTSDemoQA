@@ -66,7 +66,7 @@ jobs:
           BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
           BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
           BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
-        run: npx playwright test --project=boostore-app-chrome --project=boostore-app-firefox
+        run: npx playwright test --project=bookstore-app-chrome --project=bookstore-app-firefox
 
       - name: Upload Bookstore test results
         if: always()

@@ -1,0 +1,13 @@
+{
+    "firstname": "John",
+    "lastname": "Steinback",
+    "email": "jstein@email.com",
+    "gender": "Male",
+    "mobile": "0102233445",
+    "subject": "Maths",
+    "hobbies": "Sports",
+    "imagePath": "",
+    "address": "Number 564, Delhi",
+    "state": "NCR",
+    "city": "Delhi"
+}

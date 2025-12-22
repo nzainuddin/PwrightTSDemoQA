@@ -63,18 +63,15 @@ export class RegistrationPage {
         await this.page.goto('/automation-practice-form');
     }
 
-    async fillMandatoryFields() {
-        await this.firstnameInput.fill("John");
-        await this.lastnameInput.fill("Doe");
-        await this.page.getByText('Male', { exact: true }).click();
-        await this.mobileInput.fill("1234567890");  
+    async fillMandatoryFields(student: any) {
+        await this.firstnameInput.fill(student.firstname);
+        await this.lastnameInput.fill(student.lastname);
+        await this.page.getByText(student.gender, { exact: true }).click();
+        await this.mobileInput.fill(student.mobile);  
     }
 
-    async uploadPicture() {
-        const IMAGE_DIR = 'student/src/common/test-data/image';
-        const IMAGE_FILENAME = 'ck.jpg';
-
-        const ABSOLUTE_IMAGE_PATH = path.join(process.cwd(), IMAGE_DIR, IMAGE_FILENAME);
+    async uploadPicture(imagePath: string, imageName: string) {
+        const ABSOLUTE_IMAGE_PATH = path.join(process.cwd(), imagePath, imageName);
         await this.pictureUploadLabel.waitFor({ state: 'visible', timeout: 15000 });
         const [fileChooser] = await Promise.all([
             this.page.waitForEvent('filechooser', { timeout: 15000 }),
@@ -85,33 +82,37 @@ export class RegistrationPage {
     }
 
 
-    async fillAllFields() {
-        await this.firstnameInput.fill(testData.firstname);
-        await this.lastnameInput.fill(testData.lastname);
-        await this.emailInput.fill(testData.email);
-        await this.page.getByText(testData.gender, { exact: true }).click();
-        await this.mobileInput.fill(testData.mobile);
-        await this.subjectsInput.fill(testData.subject);
+    async fillAllFields(student: any) {
+        await this.firstnameInput.fill(student.firstname);
+        await this.lastnameInput.fill(student.lastname);
+        await this.emailInput.fill(student.email);
+        await this.page.getByText(student.gender, { exact: true }).click();
+        await this.mobileInput.fill(student.mobile);
+        await this.subjectsInput.fill(student.subject);
         await this.page.keyboard.press('Tab');
-        await this.page.getByText(testData.hobbies).click();
-        await this.uploadPicture();
-        await this.addressTextArea.fill(testData.address);
+        await this.page.getByText(student.hobbies).click();
+        await this.uploadPicture(student.imagePath, student.imageName);
+        await this.addressTextArea.fill(student.address);
         await this.stateDropdown.click();
-        await this.page.getByText(testData.state, { exact: true }).click();
+        await this.page.getByText(student.state, { exact: true }).click();
         await this.cityDropdown.click();
-        await this.page.getByText(testData.city, { exact: true }).click();
+        await this.page.getByText(student.city, { exact: true }).click();
     }
 
-    async verifySubmittedValues() {
+    async verifySubmittedValues(validation: string) {
+        const today = new Date();
+        const expectedDate = `${today.getDate()} ${today.toLocaleString('en-US', { month: 'long' })},${today.getFullYear()}`;
         await expect(this.studentNameTxt).toHaveText(testData.firstname + " " + testData.lastname);
-        await expect(this.studentEmailTxt).toHaveText(testData.email);
         await expect(this.genderTxt).toHaveText(testData.gender);
         await expect(this.mobileTxt).toHaveText(testData.mobile);
-        await expect(this.dobTxt).toHaveText("");
-        await expect(this.subjectsTxt).toHaveText(testData.subject);
-        await expect(this.hobbiesTxt).toHaveText(testData.hobbies);
-        await expect(this.pictureTxt).toHaveText(testData.imagePath);
-        await expect(this.addressTxt).toHaveText(testData.address);
-        await expect(this.statecityTxt).toHaveText(testData.state + " " + testData.city);
+        if(validation == 'Full') {
+            await expect(this.studentEmailTxt).toHaveText(testData.email);
+            await expect(this.dobTxt).toHaveText(expectedDate);
+            await expect(this.subjectsTxt).toHaveText(testData.subject);
+            await expect(this.hobbiesTxt).toHaveText(testData.hobbies);
+            await expect(this.pictureTxt).toHaveText(testData.imageName);
+            await expect(this.addressTxt).toHaveText(testData.address);
+            await expect(this.statecityTxt).toHaveText(testData.state + " " + testData.city);
+        }
     }
 }

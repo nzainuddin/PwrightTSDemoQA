@@ -98,7 +98,7 @@ jobs:
           path: |
             reports/
             test-results/
-          retention-days: 7
+          retention-days: 2
 
       - name: Upload HTML report
         if: always()
@@ -106,4 +106,4 @@ jobs:
         with:
           name: manual-html-report-${{ inputs.project }}-${{ inputs.browser }}-${{ github.run_number }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 2

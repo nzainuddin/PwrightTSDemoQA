@@ -76,7 +76,7 @@ jobs:
           path: |
             reports/bookstore/
             test-results/
-          retention-days: 7
+          retention-days: 2
 
   test-student:
     name: Student App Tests
@@ -112,7 +112,7 @@ jobs:
           path: |
             reports/student/
             test-results/
-          retention-days: 7
+          retention-days: 2
 
   notify-pr:
     name: PR Comment with Results

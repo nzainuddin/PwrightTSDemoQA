@@ -52,7 +52,7 @@ jobs:
           path: |
             playwright-report/
             test-results/
-          retention-days: 30
+          retention-days: 2
 
       - name: Upload Bookstore HTML report
         if: always()
@@ -60,7 +60,7 @@ jobs:
         with:
           name: bookstore-html-report
           path: playwright-report/
-          retention-days: 30
+          retention-days: 2
 
   test-student:
     name: Student App Tests
@@ -107,7 +107,7 @@ jobs:
         with:
           name: student-html-report
           path: playwright-report/
-          retention-days: 30
+          retention-days: 2
 
   notify:
     name: Send Notification

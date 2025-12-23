@@ -19,6 +19,7 @@ export class RegistrationPage {
    readonly stateDropdown: Locator;
    readonly cityDropdown: Locator;
    readonly submitBtn: Locator;
+   readonly modalTitleTxt: Locator;
    readonly studentNameTxt: Locator;
    readonly studentEmailTxt: Locator;
    readonly genderTxt: Locator;
@@ -33,30 +34,31 @@ export class RegistrationPage {
 
     constructor(page: Page) {
        this.page = page;
-       this.firstnameInput = page.getByPlaceholder("First Name");
-       this.lastnameInput = page.getByPlaceholder("Last Name");
-       this.emailInput = page.locator("#userEmail");
-       this.genderRadioBtn = page.getByLabel("Gender")
-       this.mobileInput = page.locator("#userNumber");
-       this.dateOfBirthDatePicker = page.getByLabel("Date of Birth");
-       this.subjectsInput = page.locator("#subjectsInput");
-       this.hobbiesCBox = page.getByLabel("Hobbies");
-       this.pictureUploadLabel = page.locator("label.form-file-label");
-       this.pictureUploadInput = page.locator("input#uploadPicture");
-       this.addressTextArea = page.locator("#currentAddress");
-       this.stateDropdown = page.getByText("Select State");
-       this.cityDropdown = page.locator("#city");
+       this.firstnameInput = page.getByPlaceholder('First Name');
+       this.lastnameInput = page.getByPlaceholder('Last Name');
+       this.emailInput = page.locator('#userEmail');
+       this.genderRadioBtn = page.getByLabel('Gender')
+       this.mobileInput = page.locator('#userNumber');
+       this.dateOfBirthDatePicker = page.getByLabel('Date of Birth');
+       this.subjectsInput = page.locator('#subjectsInput');
+       this.hobbiesCBox = page.getByLabel('Hobbies');
+       this.pictureUploadLabel = page.locator('label.form-file-label');
+       this.pictureUploadInput = page.locator('input#uploadPicture');
+       this.addressTextArea = page.locator('#currentAddress');
+       this.stateDropdown = page.getByText('Select State');
+       this.cityDropdown = page.locator('#city');
        this.submitBtn = page.getByRole('button', { name: 'Submit' });
-       this.studentNameTxt = page.locator("//td[text()='Student Name']/following-sibling::td");
-       this.studentEmailTxt = page.locator("//td[text()='Student Email']/following-sibling::td");
-       this.genderTxt = page.locator("//td[text()='Gender']/following-sibling::td");
-       this.mobileTxt = page.locator("//td[text()='Mobile']/following-sibling::td");
-       this.dobTxt = page.locator("//td[text()='Date of Birth']/following-sibling::td");
-       this.subjectsTxt = page.locator("//td[text()='Subjects']/following-sibling::td");
-       this.hobbiesTxt = page.locator("//td[text()='Hobbies']/following-sibling::td");
-       this.pictureTxt = page.locator("//td[text()='Picture']/following-sibling::td");
-       this.addressTxt = page.locator("//td[text()='Address']/following-sibling::td");
-       this.statecityTxt = page.locator("//td[text()='State and City']/following-sibling::td");
+       this.modalTitleTxt = page.locator('div.modal-title');
+       this.studentNameTxt = page.locator('//td[text()="Student Name"]/following-sibling::td');
+       this.studentEmailTxt = page.locator('//td[text()="Student Email"]/following-sibling::td');
+       this.genderTxt = page.locator('//td[text()="Gender"]/following-sibling::td');
+       this.mobileTxt = page.locator('//td[text()="Mobile"]/following-sibling::td');
+       this.dobTxt = page.locator('//td[text()="Date of Birth"]/following-sibling::td');
+       this.subjectsTxt = page.locator('//td[text()="Subjects"]/following-sibling::td');
+       this.hobbiesTxt = page.locator('//td[text()="Hobbies"]/following-sibling::td');
+       this.pictureTxt = page.locator('//td[text()="Picture"]/following-sibling::td');
+       this.addressTxt = page.locator('//td[text()="Address"]/following-sibling::td');
+       this.statecityTxt = page.locator('//td[text()="State and City"]/following-sibling::td');
     }
 
     async visit() {
@@ -102,6 +104,7 @@ export class RegistrationPage {
     async verifySubmittedValues(validation: string) {
         const today = new Date();
         const expectedDate = `${today.getDate()} ${today.toLocaleString('en-US', { month: 'long' })},${today.getFullYear()}`;
+        await expect(this.modalTitleTxt).toHaveText('Thanks for submitting the form');
         await expect(this.studentNameTxt).toHaveText(testData.firstname + " " + testData.lastname);
         await expect(this.genderTxt).toHaveText(testData.gender);
         await expect(this.mobileTxt).toHaveText(testData.mobile);

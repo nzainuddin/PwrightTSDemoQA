@@ -40,7 +40,7 @@ export default defineConfig({
     // -------------------------------------------------------------------
     {
       name: 'bookstore-app-chrome',
-      testDir: './bookstore/tests/ui',
+      testDir: './bookstore/tests',
       outputDir: 'test-results/bookstore-chrome',
       use: { 
         ...devices['Desktop Chrome'],
@@ -52,7 +52,7 @@ export default defineConfig({
     },
     {
       name: 'bookstore-app-firefox',
-      testDir: './bookstore/tests/ui',
+      testDir: './bookstore/tests',
       outputDir: 'test-results/bookstore-firefox',
       use: {
         ...devices['Desktop Firefox'],

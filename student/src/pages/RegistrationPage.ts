@@ -54,7 +54,7 @@ export class RegistrationPage {
        this.genderTxt = page.locator('//td[text()="Gender"]/following-sibling::td');
        this.mobileTxt = page.locator('//td[text()="Mobile"]/following-sibling::td');
        this.dobTxt = page.locator('//td[text()="Date of Birth"]/following-sibling::td');
-       this.subjectsTxt = page.locator('//td[text()="Subjects"]/following-sibling::td');
+       this.subjectsTxt = page.locator('//td[text()="Subjects"]/following-sibling::td[1]');
        this.hobbiesTxt = page.locator('//td[text()="Hobbies"]/following-sibling::td');
        this.pictureTxt = page.locator('//td[text()="Picture"]/following-sibling::td');
        this.addressTxt = page.locator('//td[text()="Address"]/following-sibling::td');

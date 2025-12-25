@@ -18,6 +18,10 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
+      env:
+          BOOKSTORE_BASE_URL: ${{ secrets.BOOKSTORE_BASE_URL }}
+          BOOKSTORE_USERNAME: ${{ secrets.BOOKSTORE_USERNAME }}
+          BOOKSTORE_PASSWORD: ${{ secrets.BOOKSTORE_PASSWORD }}
       run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}

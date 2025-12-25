@@ -4,6 +4,9 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+(!process.env.BOOKSTORE_BASE_URL) ?
+  console.error('❌ ERROR: .env file not found or BOOKSTORE_BASE_URL is missing!') :
+  console.log('✅ Environment variables loaded successfully.');
 (!process.env.BOOKSTORE_USERNAME) ?
   console.error('❌ ERROR: .env file not found or BOOKSTORE_USERNAME is missing!') :
   console.log('✅ Environment variables loaded successfully.');
@@ -41,7 +44,7 @@ export default defineConfig({
       outputDir: 'test-results/bookstore-chrome',
       use: { 
         ...devices['Desktop Chrome'],
-        baseURL: process.env.BOOKSTORE_BASE_URL!,
+        baseURL: process.env.BOOKSTORE_BASE_URL || 'https://demoqa.com',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
         trace: 'retain-on-failure'
@@ -53,7 +56,7 @@ export default defineConfig({
       outputDir: 'test-results/bookstore-firefox',
       use: {
         ...devices['Desktop Firefox'],
-        baseURL: process.env.BOOKSTORE_BASE_URL!,
+        baseURL: process.env.BOOKSTORE_BASE_URL || 'https://demoqa.com',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
         trace: 'retain-on-failure'
@@ -72,7 +75,7 @@ export default defineConfig({
           args: ['--disable-site-isolation-trials'], 
       },
         ...devices['Desktop Chrome'],
-        baseURL: 'https://demoqa.com',
+        baseURL: process.env.BOOKSTORE_BASE_URL || 'https://demoqa.com',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
         trace: 'on-first-retry',
@@ -84,7 +87,7 @@ export default defineConfig({
       outputDir: 'test-results/student-firefox',
       use: {
         ...devices['Desktop Firefox'],
-        baseURL: 'https://demoqa.com',
+        baseURL: process.env.BOOKSTORE_BASE_URL || 'https://demoqa.com',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
         trace: 'on-first-retry'

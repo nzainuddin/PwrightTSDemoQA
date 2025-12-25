@@ -5,6 +5,7 @@ export class BookStoreAPI {
 
   constructor(
     private request: APIRequestContext, 
+    private baseURL: string,
     private username: string, 
     private password: string
   ) {
@@ -27,12 +28,12 @@ export class BookStoreAPI {
     };
 
     const requestOptions = { headers: headers, data: data };
-
+    console.log(`Executing ${method} request to ${url} with data:`, data);
     switch (method) {
-      case 'GET':    return await this.request.get(url, requestOptions);
-      case 'POST':   return await this.request.post(url, requestOptions);
-      case 'PUT':    return await this.request.put(url, requestOptions);
-      case 'DELETE': return await this.request.delete(url, requestOptions);
+      case 'GET':    return await this.request.get(this.baseURL + url, requestOptions);
+      case 'POST':   return await this.request.post(this.baseURL + url, requestOptions);
+      case 'PUT':    return await this.request.put(this.baseURL + url, requestOptions);
+      case 'DELETE': return await this.request.delete(this.baseURL + url, requestOptions);
     }
   }
 
@@ -67,6 +68,14 @@ export class BookStoreAPI {
     return userID;
   }
 
+  async deleteUser(userId: string): Promise<void> {
+    const deleteResponse = await this.execute({
+      method: 'DELETE',
+      url: `/Account/v1/User/${userId}`,
+    });
+    expect(deleteResponse.status()).toBe(204);
+  }
+
   async generateToken(): Promise<string> {
     const tokenResponse = await this.execute({
       method: 'POST',
@@ -83,7 +92,7 @@ export class BookStoreAPI {
       method: 'GET',
       url: '/BookStore/v1/Books',
       useAuth: true
-    });
+    });  
     const bookResult = await getBookResponse.json();
     return bookResult.books
         .find((book: { title: string }) => book.title === title)?.isbn || null;

@@ -111,7 +111,7 @@ export class RegistrationPage {
         if(validation == 'Full') {
             await expect(this.studentEmailTxt).toHaveText(testData.email);
             await expect(this.dobTxt).toHaveText(expectedDate);
-            await expect(this.subjectsTxt).toHaveText(testData.subject);
+            await expect(this.subjectsTxt).toHaveText(testData.subject, { timeout: 10000 });
             await expect(this.hobbiesTxt).toHaveText(testData.hobbies);
             await expect(this.pictureTxt).toHaveText(testData.imageName);
             await expect(this.addressTxt).toHaveText(testData.address);

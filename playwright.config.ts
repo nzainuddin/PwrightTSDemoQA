@@ -17,15 +17,11 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['html', { 
-      outputFolder: 'reports/html',
+      outputFolder: 'reports',
       open: 'never' 
     }],
-    ['json', { 
-      outputFile: 'reports/json/test-results.json' 
-    }],
-    ['junit', { 
-      outputFile: 'reports/junit/results.xml' 
-    }],
+    ['json', { outputFile: 'reports/json/test-results.json' }],
+    ['junit', { outputFile: 'reports/junit/results.xml' }],
     ['list'],
     // GitHub Actions reporter
     process.env.CI ? ['github'] : ['line'],

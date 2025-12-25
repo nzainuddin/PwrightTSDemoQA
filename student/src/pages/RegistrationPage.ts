@@ -1,7 +1,7 @@
 import { expect, Locator, type Page } from '@playwright/test';
 import testData from '../common/test-data/json/student.json';
+import { Helper } from '../common/helper';
 import * as path from 'path';
-import { assert } from 'console';
 
 export class RegistrationPage {
    private readonly page: Page;
@@ -101,7 +101,10 @@ export class RegistrationPage {
         await this.page.getByText(student.city, { exact: true }).click();
     }
 
+
+
     async verifySubmittedValues(validation: string) {
+        const helper = new Helper();
         const today = new Date();
         const expectedDate = `${today.getDate()} ${today.toLocaleString('en-US', { month: 'long' })},${today.getFullYear()}`;
         await expect(this.modalTitleTxt).toHaveText('Thanks for submitting the form');
@@ -111,7 +114,7 @@ export class RegistrationPage {
         if(validation == 'Full') {
             await expect(this.studentEmailTxt).toHaveText(testData.email);
             await expect(this.dobTxt).toHaveText(expectedDate);
-            await expect(this.subjectsTxt).toHaveText(testData.subject, { timeout: 10000 });
+            await helper.assertTextOnceVisible(this.subjectsTxt, testData.subject, 2000);
             await expect(this.hobbiesTxt).toHaveText(testData.hobbies);
             await expect(this.pictureTxt).toHaveText(testData.imageName);
             await expect(this.addressTxt).toHaveText(testData.address);

@@ -29,7 +29,6 @@ export const test = base.extend<CustomFixtures>({
   },
 
   bookstoreAPI: async ({ request, credentials}, use) => {
-    console.log(credentials.baseURL);
     await use(new BookStoreAPI(request, credentials.baseURL, credentials.user, credentials.pwd));
   },
 

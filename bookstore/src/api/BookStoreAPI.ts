@@ -37,6 +37,17 @@ export class BookStoreAPI {
     }
   }
 
+  async getBookList() {
+    const response = await this.execute({
+      method: 'GET',
+      url: '/BookStore/v1/Books',
+      useAuth: true
+    });
+    expect(response.status()).toBe(200);
+    console.log('Book List Response:', await response.json());
+    return response.json();
+  }
+
   async addBooks(userId: string, isbns: string[]) {
     const response = await this.execute({
       method: 'POST',
@@ -44,6 +55,7 @@ export class BookStoreAPI {
       data: { userId, collectionOfIsbns: isbns.map(isbn => ({ isbn })) }
     });
     expect(response.status()).toBe(201);
+    console.log('Add Books Response:', await response.json());
     return response.json();
   }
 
@@ -54,6 +66,7 @@ export class BookStoreAPI {
       data: { userId, collectionOfIsbns: [{ isbn: isbn }] }
     });
     expect(response.status()).toBe(201);
+    console.log('Add Books Response:', await response.json());
     return response.json();
   }
 
@@ -94,6 +107,7 @@ export class BookStoreAPI {
       useAuth: true
     });  
     const bookResult = await getBookResponse.json();
+    console.log('Response:', bookResult);
     return bookResult.books
         .find((book: { title: string }) => book.title === title)?.isbn || null;
   }
@@ -105,6 +119,7 @@ export class BookStoreAPI {
       useAuth: true
     });
     const booksResult = await getBooksResponse.json();
+    console.log('Response:', booksResult);
     const allBooks = booksResult.books;
     const isbns = titles.map((targetTitle) => {
       const matchingBook = allBooks.find((book: { title: string }) => book.title === targetTitle);

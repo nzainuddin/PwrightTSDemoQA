@@ -8,20 +8,16 @@ npm-debug.log*
 # ==========================================
 # Playwright
 # ==========================================
-test-results/
-test-results/bookstore-chrome/
-test-results/bookstore-firefox/
-test-results/student-chrome/
-test-results/student-firefox/
+test-results/*
+test-results/bookstore-chrome/*
+test-results/bookstore-firefox/*
+test-results/student-chrome/*
+test-results/student-firefox/*
 
-playwright-report/
-!reports/bookstore/html/
-!reports/student/html/
-reports/combined/
-reports/bookstore/json/
-reports/student/json/
-reports/bookstore/junit/
-reports/student/junit/
+playwright-report/*
+reports/bookstore/*
+reports/student/*
+reports/combined/*
 /blob-report/
 
 /playwright/.cache/

@@ -2,7 +2,12 @@ import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/bookstoreFixtures';
 
 test.describe('Bookstore API Positive Tests', () => {
-    test('TC001 - [POST] Successful in adding single book', async ({ bookstoreAPI, request }) => {
+    test('TC001 - [GET] Successful in fetching book list', async ({ bookstoreAPI }) => {
+        const booksResp = await bookstoreAPI.getBookList();
+        expect(booksResp.books.length).toBeGreaterThan(0);
+    });
+
+    test('TC002 - [POST] Successful in adding single book', async ({ bookstoreAPI }) => {
         const userId = await bookstoreAPI.registerUser();
         const isbn = await bookstoreAPI.getBookISBN('Speaking JavaScript');
         const addBookResp = await bookstoreAPI.addBook(userId, isbn!);
@@ -10,7 +15,7 @@ test.describe('Bookstore API Positive Tests', () => {
         await bookstoreAPI.deleteUser(userId);
     });
 
-    test('TC002 - [POST] Successful in adding multiple books', async ({ bookstoreAPI, request }) => {
+    test('TC003 - [POST] Successful in adding multiple books', async ({ bookstoreAPI }) => {
         const userId = await bookstoreAPI.registerUser();
         const bookTitles = ['Git Pocket Guide','Understanding ECMAScript 6', 'Speaking JavaScript'];
         const isbns = await bookstoreAPI.getBooksISBN(bookTitles);

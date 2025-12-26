@@ -81,6 +81,17 @@ export class BookStoreAPI {
     return userID;
   }
 
+  async getUserProfile(userId: string) {
+    const profileResponse = await this.execute({
+      method: 'GET',  
+      url: `/Account/v1/User/${userId}`,
+      useAuth: true
+    }); 
+    expect(profileResponse.status()).toBe(200);
+    console.log('User Profile Response:', await profileResponse.json());
+    return profileResponse.json();
+  }
+
   async deleteUser(userId: string): Promise<void> {
     const deleteResponse = await this.execute({
       method: 'DELETE',

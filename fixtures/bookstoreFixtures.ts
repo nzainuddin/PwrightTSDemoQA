@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { BookStoreAPI } from '../bookstore/src/api/BookStoreAPI';
+import { BaseAPI } from '../bookstore/src/api/base.api';
 import { LoginPage as LoginPage } from '../bookstore/src/ui/pages/LoginPage';
 import { ProfilePage } from '../bookstore/src/ui/pages/ProfilePage';
 import dotenv from 'dotenv';
@@ -9,7 +9,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 type CustomFixtures = {
   credentials: { baseURL: string; user: string; pwd: string };
-  bookstoreAPI: BookStoreAPI;
+  baseAPI: BaseAPI;
   apiAccount: { username: string; token: string };
 
   userLogin: ProfilePage;
@@ -28,14 +28,14 @@ export const test = base.extend<CustomFixtures>({
     });
   },
 
-  bookstoreAPI: async ({ request, credentials}, use) => {
-    await use(new BookStoreAPI(request, credentials.baseURL, credentials.user, credentials.pwd));
+  baseAPI: async ({ request, credentials}, use) => {
+    await use(new BaseAPI(request, credentials.baseURL, credentials.user, credentials.pwd));
   },
 
-  apiAccount: async ({ bookstoreAPI, credentials }, use) => {
-    await bookstoreAPI.registerUser();
+  apiAccount: async ({ baseAPI, credentials }, use) => {
+    await baseAPI.registerUser();
 
-    const token = await bookstoreAPI.generateToken();
+    const token = await baseAPI.generateToken();
     await use({ username: credentials.user, token})
   },
 

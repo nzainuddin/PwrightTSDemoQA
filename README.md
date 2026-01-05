@@ -11,10 +11,6 @@
 │   └── tests 
 │       ├── api       # API tests 
 │       └── ui        # UI tests        
-│   ├── data          # Test data files and Test Cases (JSON/CSV)
-│   ├── ui/pages      # Page Object Models (POM)
-│   ├── fixtures      # Custom Playwright fixtures (API / UI)
-│   └── utils         # Utility/Reusable functions
 ├── student
 │   ├── src
 │   |   ├── common    # Test Data & Helpers 

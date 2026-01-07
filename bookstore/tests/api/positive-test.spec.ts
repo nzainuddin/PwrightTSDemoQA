@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../../../fixtures/bookstoreFixtures';
+import { test } from '../../src/fixtures/index';
 
 test.describe('Bookstore API Positive Tests', () => {
     test('TC001 - [GET] Successful in fetching book list', async ({ baseAPI }) => {

@@ -1,4 +1,4 @@
-import { test } from '../../../fixtures/studentFixtures';
+import { test } from '../../src/fixtures/ui.fixtures';
 
 test('Submit registration form with full details', async ({ pages, studentData }) => {
   await pages.registrationPage.visit();

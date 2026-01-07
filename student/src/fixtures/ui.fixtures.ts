@@ -1,6 +1,6 @@
 import { test as base } from '@playwright/test';
-import { RegistrationPage } from '../student/src/pages/RegistrationPage';
-import studentData from '../student/src/common/test-data/json/student.json'
+import { RegistrationPage } from '../pages/RegistrationPage';
+import studentData from '../common/test-data/json/student.json'
 
 type CustomFixtures = {
   pages: { registrationPage: RegistrationPage; };

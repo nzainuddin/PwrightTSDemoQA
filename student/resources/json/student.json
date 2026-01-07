@@ -6,7 +6,7 @@
     "mobile": "0102233445",
     "subject": "Maths",
     "hobbies": "Sports",
-    "imagePath": "student/src/common/test-data/image",
+    "imagePath": "student/resources/json/image",
     "imageName": "ck.jpg",
     "address": "Number 564, Delhi",
     "state": "NCR",

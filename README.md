@@ -6,20 +6,23 @@
 ├── workflows         # github actions workflows
 ├── bookstore
 │   ├── src
-│   |   ├── api       # Contain BaseApi and Controller files 
-│   |   └── ui        # Page Object Models (POM)
-│   └── tests 
-│       ├── api       # API tests 
-│       └── ui        # UI tests        
+│   |   ├── api       # Contain BaseAPI and Controller files 
+│   |   ├── ui        # Page Object Models (POM)
+│   |   └── fixtures  # API and UI Fixtures
+│   ├── tests 
+│   |   ├── api       # API tests 
+│   |   └── ui        # UI tests     
+│   └── resources     # Test data & Test Scenarios README    
 ├── student
 │   ├── src
 │   |   ├── common    # Test Data & Helpers 
-│   |   └── pages     # Page Object Models (POM)
-│   └── tests 
-│       └── ui        # UI tests 
+│   |   ├── pages     # Page Object Models (POM)
+│   |   └── fixtures  # UI Fixtures
+│   ├── tests 
+│   |   └── ui        # UI tests 
+│   └── resources     # Test data & Test Scenarios README
 ├── reports
-├── scripts           # execute test cmd
-└── fixtures
+└── scripts           # execute test cmd
 ```
 
 

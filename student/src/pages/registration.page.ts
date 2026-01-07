@@ -1,5 +1,5 @@
 import { expect, Locator, type Page } from '@playwright/test';
-import testData from '../common/test-data/json/student.json';
+import testData from '../../resources/json/student.json';
 import { Helper } from '../common/helper';
 import * as path from 'path';
 

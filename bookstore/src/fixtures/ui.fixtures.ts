@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test';
 import { test as apiTest } from './api.fixtures'
-import { LoginPage as LoginPage } from '../ui/pages/LoginPage';
-import { ProfilePage } from '../ui/pages/ProfilePage';
+import { LoginPage as LoginPage } from '../ui/pages/login.page';
+import { ProfilePage } from '../ui/pages/profile.page';
 import dotenv from 'dotenv';
 import path from 'path';
 

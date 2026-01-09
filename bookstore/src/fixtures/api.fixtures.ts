@@ -1,5 +1,4 @@
 import { test as base } from '@playwright/test';
-import { BaseAPI } from '../api/base.api';
 import { ControllerAPI } from '../api/controller.api';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -8,8 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 type CustomFixtures = {
     credentials: { baseURL: string; user: string; pwd: string };
-    baseAPI: BaseAPI;
-    controllerApi: ControllerAPI;
+    controllerAPI: ControllerAPI;
     apiAccount: { username: string; token: string };
 };
 
@@ -22,14 +20,14 @@ export const test = base.extend<CustomFixtures>({
         });
     },
 
-    baseAPI: async ({ request, credentials}, use) => {
-        await use(new BaseAPI(request, credentials.baseURL, credentials.user, credentials.pwd));
+    controllerAPI: async ({ request, credentials}, use) => {
+        await use(new ControllerAPI(request, credentials.baseURL, credentials.user, credentials.pwd));
     },
 
-    apiAccount: async ({ baseAPI, credentials }, use) => {
-        await baseAPI.registerUser();
+    apiAccount: async ({ controllerAPI, credentials }, use) => {
+        await controllerAPI.registerUser();
 
-        const token = await baseAPI.generateToken();
+        const token = await controllerAPI.generateToken();
         await use({ username: credentials.user, token})
     }
 });

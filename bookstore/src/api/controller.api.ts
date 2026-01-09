@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { APIRequestContext, expect } from '@playwright/test';
 import { BaseAPI } from './base.api';
 
 export class ControllerAPI extends BaseAPI {
@@ -24,13 +24,13 @@ export class ControllerAPI extends BaseAPI {
     return response.json();
   }
 
-  async addBook(userId: string, isbn: string) {
+  async addBook(userId: string, isbn: string, statusCode: number) {
     const response = await this.execute({
       method: 'POST',
       url: '/BookStore/v1/Books',
       data: { userId, collectionOfIsbns: [{ isbn: isbn }] }
     });
-    expect(response.status()).toBe(201);
+    expect(response.status()).toBe(statusCode);
     console.log('Add Books Response:', await response.json());
     return response.json();
   }
@@ -75,13 +75,14 @@ export class ControllerAPI extends BaseAPI {
     const { token } = await tokenResponse.json();
     return token;
   }
-  
-  async getBookISBN(title: string): Promise<string | null> {
+
+  async getBookISBN(title: string, statusCode: number): Promise<string | null> {
     const getBookResponse = await this.execute({
       method: 'GET',
       url: '/BookStore/v1/Books',
       useAuth: true
     });  
+    expect(getBookResponse.status()).toBe(statusCode);
     const bookResult = await getBookResponse.json();
     console.log('Response:', bookResult);
     return bookResult.books

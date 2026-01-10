@@ -8,37 +8,31 @@ test.describe('Bookstore API Positive Tests', () => {
     });
 
     test('TC002 - [POST] Successful in adding single book', async ({ controllerAPI }) => {
-        // Register a new user
-        const userId = await controllerAPI.registerUser();
-        // Get ISBN for the specified book title
+        const { userID } = await controllerAPI.registerUser();
+        console.log("User ID on test: " + userID);
         const isbn = await controllerAPI.getBookISBN('Speaking JavaScript', 200);
-        // Add the book to the user's collection
-        const addBookResp = await controllerAPI.addBook(userId, isbn!, 201);
+        const addBookResp = await controllerAPI.addBook(userID, isbn!, true, 201);
         expect(addBookResp.books[0].isbn).toBe(isbn);
         // Verify book added to user profile
-        const profile = await controllerAPI.getUserProfile(userId);
+        const profile = await controllerAPI.getUserProfile(userID);
         const userBooksCollections = profile.books.map((book: { isbn: string }) => book.isbn);
         expect(userBooksCollections).toContain(isbn);
-        // Clean up by deleting the user
-        await controllerAPI.deleteUser(userId);
     });
 
     test('TC003 - [POST] Successful in adding multiple books', async ({ controllerAPI }) => {
         const bookTitles = ['Git Pocket Guide','Understanding ECMAScript 6', 'Speaking JavaScript'];
         // Register a new user
-        const userId = await controllerAPI.registerUser();
+        const { userID } = await controllerAPI.registerUser();
         // Get ISBNs for the specified book titles
         const isbns = await controllerAPI.getBooksISBN(bookTitles);
         // Add the books to the user's collection
-        const addBooksResp = await controllerAPI.addBooks(userId, isbns!);
+        const addBooksResp = await controllerAPI.addBooks(userID, isbns!);
         // Verify the added books
         const actualIsbns = addBooksResp.books.map((b: { isbn: string }) => b.isbn);
         expect(actualIsbns).toEqual(expect.arrayContaining(isbns!));
         // Verify books added to user profile
-        const profile = await controllerAPI.getUserProfile(userId);
+        const profile = await controllerAPI.getUserProfile(userID);
         const userBooksCollections = profile.books.map((book: { isbn: string }) => book.isbn);
         expect(userBooksCollections).toEqual(expect.arrayContaining(isbns));
-        // Clean up by deleting the user
-        await controllerAPI.deleteUser(userId);
     });
 });

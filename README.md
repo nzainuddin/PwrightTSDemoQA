@@ -31,7 +31,7 @@
 
 
 ### Bookstore Application
-
+* [Test Scenarios](https://github.com/nzainuddin/PwrightTSDemoQA/blob/main/bookstore/resources/TC.md)
 ### UI Tests
 
 ### API Tests

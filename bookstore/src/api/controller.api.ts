@@ -9,7 +9,7 @@ export class ControllerAPI extends BaseAPI {
       method: 'POST',
       url: '/Account/v1/GenerateToken', 
       data: { userName: this.username, password: this.password },
-      useAuth: false
+      useAuth: true
     });
     const { token } = await tokenResponse.json();
     return token;

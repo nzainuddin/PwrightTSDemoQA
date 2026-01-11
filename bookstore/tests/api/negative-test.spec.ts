@@ -34,7 +34,11 @@ test.describe('Bookstore API Negative Tests', () => {
         await controllerAPI.addBook("invalidUserId", isbn!, true, 401);
     });
 
-    test('TC014 - Verify user is unable to generate token with incorrect credentials', async ({ controllerAPI, credentials }) => {
+    test('TC014 - Verify user is unable to generate token for unregistered user', async ({ controllerAPI, credentials }) => {
+        const tokenResponse = await controllerAPI.generateTokenWithParams('Lisa', 'Blckming@5', 200);
+        expect(tokenResponse.token).toBe(null);
+        expect(tokenResponse.status).toBe("Failed");
+        expect(tokenResponse.result).toBe("User authorization failed.");
     });
 
     test('TC015 - Verify user is unable to register with existing username', async ({ controllerAPI, credentials }) => {
@@ -47,6 +51,9 @@ test.describe('Bookstore API Negative Tests', () => {
     });
 
     test('TC016 - Verify unable to delete non-existent user', async ({ controllerAPI }) => {
+        const { userID } = await controllerAPI.registerUser(); 
+        const deletedRes = await controllerAPI.deleteUserWResp(userID.replace(userID.charAt(0), 'X'));
+        expect(deletedRes.message).toBe("User Id not correct!");
     });
 
     test('TC017 - Verify unable to fetch profile of non-existent user', async ({ controllerAPI }) => {

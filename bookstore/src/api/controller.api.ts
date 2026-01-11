@@ -1,4 +1,4 @@
-import { APIRequestContext, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { BaseAPI } from './base.api';
 import fs from 'fs';
 
@@ -13,6 +13,16 @@ export class ControllerAPI extends BaseAPI {
     });
     const { token } = await tokenResponse.json();
     return token;
+  }
+
+  async generateTokenWithParams(username: string, password: string, statusCode: number): Promise<any> {
+    const tokenResponse = await this.execute({
+      method: 'POST',
+      url: '/Account/v1/GenerateToken', 
+      data: { userName: username, password: password },
+    });
+    expect(tokenResponse.status(), statusCode.toString());
+    return await tokenResponse.json();
   }
 
   async registerUser(): Promise<any> {
@@ -51,7 +61,6 @@ export class ControllerAPI extends BaseAPI {
               token: token,
               userID: body.userID 
             }));
-            // fs.writeFileSync('last_user_id.json', JSON.stringify({ userID: body.userID }));
           } catch (tokenError) {
             console.error('⚠️Error generating token:', tokenError);
             fs.writeFileSync('last_user.json', JSON.stringify({ userID: body.userID }));
@@ -116,7 +125,7 @@ export class ControllerAPI extends BaseAPI {
       url: `/Account/v1/User/${userId}`,
       useAuth: true
     }); 
-    console.log("👤Profile response status" + profileResponse.status());
+    console.log("👤 Profile response status" + profileResponse.status());
     return profileResponse.status();
   }
 
@@ -126,6 +135,16 @@ export class ControllerAPI extends BaseAPI {
       url: `/Account/v1/User/${userId}`,
       useAuth: true,
     });
+  }
+
+  async deleteUserWResp(userId: string): Promise<any> {
+    const deleteResponse = await this.execute({
+      method: 'DELETE',
+      url: `/Account/v1/User/${userId}`,
+      useAuth: true,
+    });
+    console.log('🦆 Status Code for deleting user: ' +  deleteResponse.status());
+    return await deleteResponse.json();
   }
 
   async deleteUserIfExist(): Promise<void> {

@@ -16,21 +16,57 @@ export class ControllerAPI extends BaseAPI {
   }
 
   async registerUser(): Promise<any> {
-    await this.deleteUserIfExist();
-    const registerResponse = await this.execute({
-      method: 'POST',
-      url: '/Account/v1/User',
-      data: { userName: this.username, password: this.password },
-      useAuth: false
-    });
-    const body = await registerResponse.json();
-    if (body.userID) {
-      const token = await this.generateToken();
-      fs.writeFileSync('last_token.json', JSON.stringify({ token }));
-      fs.writeFileSync('last_user_id.json', JSON.stringify({ userID: body.userID }));
-      console.log("Write both token and userId: " + token + "-" + body.userID);
+    let registerResponse: any;
+    let maxRetries = 3;
+    let retryCount = 0;
+
+    while (retryCount < maxRetries) {
+      try {
+        await this.deleteUserIfExist();
+        
+        registerResponse = await this.execute({
+          method: 'POST',
+          url: '/Account/v1/User',
+          data: { userName: this.username, password: this.password },
+          useAuth: false
+        });
+
+        const contentType = registerResponse.headers()['content-type'] || '';
+        if (!contentType.includes('application/json')) {
+          console.warn(`⚠️Expected JSON but got: ${contentType}. Response status: ${registerResponse.status()}`);
+          retryCount++;
+          if (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+            continue;
+          }
+          return { error: 'Server returned non-JSON response' };
+        }
+
+        const body = await registerResponse.json();
+        
+        if (body.userID) {
+          try {
+            const token = await this.generateToken();
+            fs.writeFileSync('last_user.json', JSON.stringify({ 
+              token: token,
+              userID: body.userID 
+            }));
+            // fs.writeFileSync('last_user_id.json', JSON.stringify({ userID: body.userID }));
+          } catch (tokenError) {
+            console.error('⚠️Error generating token:', tokenError);
+            fs.writeFileSync('last_user.json', JSON.stringify({ userID: body.userID }));
+          }
+        }
+        return body;
+      } catch (error) {
+        console.error(`📝Registration attempt ${retryCount + 1} failed:`, error);
+        retryCount++;
+        if (retryCount < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        }
+      }
     }
-    return body;
+    return { error: '🏳️Max registration retries reached' };
   }
 
   async getBookList() {
@@ -61,7 +97,7 @@ export class ControllerAPI extends BaseAPI {
       useAuth: setAuth
     });
     expect(response.status()).toBe(statusCode);
-    console.log('Add Books Response:', await response.json());
+    console.log('📚Add Books Response:', await response.json());
     return response.json();
   }
 
@@ -80,7 +116,7 @@ export class ControllerAPI extends BaseAPI {
       url: `/Account/v1/User/${userId}`,
       useAuth: true
     }); 
-    console.log("Profile response status" + profileResponse.status());
+    console.log("👤Profile response status" + profileResponse.status());
     return profileResponse.status();
   }
 
@@ -93,19 +129,30 @@ export class ControllerAPI extends BaseAPI {
   }
 
   async deleteUserIfExist(): Promise<void> {
-    const lastUserId = fs.readFileSync('last_user_id.json', 'utf-8').toString().replace(/["{}]/g, '').split(':')[1];
-    const profileExist = await this.checkProfileStatus(lastUserId);
-    if (profileExist === 200) {
-      await this.deleteUser(lastUserId);
-      console.log(`Deleted user with ID: ${lastUserId}`);
+    try {
+      const fileContent = fs.readFileSync('last_user_id.json', 'utf-8');
+      const parsed = JSON.parse(fileContent);
+      const lastUserId = parsed.userID;
+      
+      if (!lastUserId) {
+        console.log('🫥No previous user ID found to clean up');
+        return;
+      }
+      
+      const profileExist = await this.checkProfileStatus(lastUserId);
+      if (profileExist === 200) {
+        await this.deleteUser(lastUserId);
+        console.log(`🧹Deleted user with ID: ${lastUserId}`);
+      }
+    } catch (error) {
+      console.log('⛔Error cleaning up previous user:', error);
     }
   }
 
   async getBookISBN(title: string, statusCode: number): Promise<string | null> {
     const getBookResponse = await this.execute({
       method: 'GET',
-      url: '/BookStore/v1/Books',
-      // useAuth: true
+      url: '/BookStore/v1/Books'
     });  
     expect(getBookResponse.status()).toBe(statusCode);
     const bookResult = await getBookResponse.json();

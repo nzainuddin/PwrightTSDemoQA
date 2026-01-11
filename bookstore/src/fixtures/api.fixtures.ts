@@ -1,5 +1,6 @@
 import { test as base } from '@playwright/test';
 import { ControllerAPI } from '../api/controller.api';
+import { Helper } from '../helpers';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -13,9 +14,10 @@ type CustomFixtures = {
 
 export const test = base.extend<CustomFixtures>({
     credentials: async ({}, use) => {
+        const helper = new Helper();
         await use({
         baseURL: process.env.BOOKSTORE_BASE_URL!,
-        user: process.env.BOOKSTORE_USERNAME!,
+        user: helper.getUniqueString(process.env.BOOKSTORE_USERNAME!),
         pwd: process.env.BOOKSTORE_PASSWORD!,
         });
     },

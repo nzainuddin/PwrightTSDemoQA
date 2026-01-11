@@ -42,24 +42,33 @@ test.describe('Bookstore API Negative Tests', () => {
     });
 
     test('TC015 - Verify user is unable to register with existing username', async ({ controllerAPI, credentials }) => {
-        // Register User Response Body: { code: '1204', message: 'User exists!' }
-        // Register User Response Status: 406
-
-        // Register User Response Body: { code: '1204', message: 'User ex
-        // Register User Response Body: { code: '1204', message: 'User exists!' }
-
+        const firstReg = await controllerAPI.registerUserWResp('Leha', 'Lehaaa@123');
+        const secondReg = await controllerAPI.registerUserWResp('Leha', 'Lehaaa@123');
+        expect(secondReg.message).toBe('User exists!');
+        await controllerAPI.deleteUserWResp(firstReg.userID, 'Leha', 'Lehaaa@123');
     });
 
-    test('TC016 - Verify unable to delete non-existent user', async ({ controllerAPI }) => {
-        const { userID } = await controllerAPI.registerUser(); 
-        const deletedRes = await controllerAPI.deleteUserWResp(userID.replace(userID.charAt(0), 'X'));
-        expect(deletedRes.message).toBe("User Id not correct!");
+    test('TC016 - Verify unable to delete by providing incorrect userId', async ({ controllerAPI }) => {
+        const user = await controllerAPI.registerUserWResp('Wawanaa', 'Rostar23@');
+        console.log(user.userID);
+        const deletedRes = await controllerAPI.deleteUserWResp('00'+user.userID, 'Wawanaa', 'Rostar23@');
+        expect(deletedRes.message).toBe('User Id not correct!');
+        // tear down
+        await controllerAPI.deleteUserWResp(user.userID, 'Wawanaa', 'Rostar23@');
     });
 
-    test('TC017 - Verify unable to fetch profile of non-existent user', async ({ controllerAPI }) => {
+    test('TC017 - Verify unable to delete by providing incorrect authorization header', async ({ controllerAPI }) => {
+        const user = await controllerAPI.registerUserWResp('Wawafa', 'Rostar33@');
+        const deletedRes = await controllerAPI.deleteUserWResp(user.userID, 'Wawa', 'Rotar33@');
+        expect(deletedRes.message).toBe('User not authorized!');
+        // tear down
+        await controllerAPI.deleteUserWResp(user.userID, 'Wawafa', 'Rostar33@');
     });
 
-    test('TC018 - Verify non-authorized user unable to add books', async ({ controllerAPI }) => {
+    test('TC018 - Verify unable to fetch profile of non-existent user', async ({ controllerAPI }) => {
+    });
+
+    test('TC019 - Verify non-authorized user unable to add books', async ({ controllerAPI }) => {
         const { userID } = await controllerAPI.registerUser(); 
         const isbn = await controllerAPI.getBookISBN('Speaking JavaScript', 200);
         await controllerAPI.addBook(userID, isbn!, false, 401);   

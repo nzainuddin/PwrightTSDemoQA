@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test';
 import { BaseAPI } from './base.api';
+import { Helper } from '../helpers';
 import fs from 'fs';
 
 export class ControllerAPI extends BaseAPI {
-
   async generateToken(): Promise<string> {
     const tokenResponse = await this.execute({
       method: 'POST',
@@ -78,6 +78,19 @@ export class ControllerAPI extends BaseAPI {
     return { error: '🏳️Max registration retries reached' };
   }
 
+  async registerUserWResp(username: string, password: string): Promise<any> {
+    const registerResponse = await this.execute({
+          method: 'POST',
+          url: '/Account/v1/User',
+          data: { userName: username, password: password },
+          useAuth: false
+        });
+
+    console.log('Registering username: ' + username);
+    console.log(await registerResponse.json());
+    return await registerResponse.json();
+  }
+
   async getBookList() {
     const response = await this.execute({
       method: 'GET',
@@ -137,14 +150,45 @@ export class ControllerAPI extends BaseAPI {
     });
   }
 
-  async deleteUserWResp(userId: string): Promise<any> {
-    const deleteResponse = await this.execute({
-      method: 'DELETE',
-      url: `/Account/v1/User/${userId}`,
-      useAuth: true,
-    });
-    console.log('🦆 Status Code for deleting user: ' +  deleteResponse.status());
-    return await deleteResponse.json();
+  async deleteUserWResp(userId: string, username: string, password: string): Promise<any> {
+    const helper = new Helper();
+    let deleteResponse: any, maxRetries = 4, retryCount = 0;
+
+    while (retryCount < maxRetries) {
+      try {
+        deleteResponse = await this.execute({
+          method: 'DELETE',
+          url: `/Account/v1/User/${userId}`,
+          useAuth: false,
+          customHeaders: { 'Authorization': 'Basic ' + helper.encodeCredsBase64(username, password) }
+        });
+
+        const contentType = deleteResponse.headers()['content-type'] || '';
+        
+        // If !502 errors >>> return resp
+        if (deleteResponse.status() !== 502) {
+          return (contentType.includes('application/json')) ? await deleteResponse.json() 
+            : console.log('🦆 Delete operation successful!');
+        }
+        // If 502 errors >>> retry
+        if (deleteResponse.status() === 502) {
+          console.warn(`🦆 Delete operation for ${userId} failed. Retrying to delete again after 7 seconds`);
+          retryCount++;
+          if (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 7000));
+            continue;
+          }
+          return { error: 'Server returned 502 error after retries' };
+        }
+      } catch (error) {
+        console.error(`🦆 Delete attempt ${retryCount + 1} failed:`, error);
+        // retryCount++;
+        // if (retryCount < maxRetries) {
+        //   await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        // }
+      }
+    }
+    return { error: '🏳️ Max delete retries reached' };
   }
 
   async deleteUserIfExist(): Promise<void> {

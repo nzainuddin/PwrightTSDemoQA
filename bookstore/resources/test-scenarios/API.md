@@ -2,8 +2,8 @@
 | Test ID | Scenarios | Test Steps | Severity | Status |
 |---------|-----------|------------|----------|--------|
 | TC001 | Successful in fetching book list | 1. Send GET request to retrieve available book list | High | PASS |
-| TC002 | Successful in adding single book | 1. Send request to Register a new user<br>2. Send GET request to retrieve ISBN for the specified book title | High | PASS |
-| TC003 |||||
+| TC002 | Successful in adding single book | 1. Send request to Register a new user<br>2. Send GET request to retrieve ISBN for the specified book title<br>3. Send POST request to add book by ISBN received on Step 2<br>4. Send GET request to retrieve user profile details<br>4. Verify book with ISBN retrieved on Step 2 successfully reflected on the profile details | High | PASS |
+| TC003 | Successful in adding multiple books | 1. Send request to Register a new user<br>2. Send GET request to retrieve ISBN for the specified book titles<br>3. Send POST request to add all books by ISBNs retrieved on Step 2<br>4. Send GET request to retrieve user profile details<br>4. Verify correct ISBN listed on user profile details | High | PASS |
 | TC004 |||||
 | TC005 |||||
 | TC006 |||||

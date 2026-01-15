@@ -13,7 +13,7 @@ test.describe('Bookstore API Positive Tests', () => {
         const isbn = await controllerAPI.getBookISBN('Speaking JavaScript', 200);
         const addBookResp = await controllerAPI.addBook(userID, isbn!, true, 201);
         expect(addBookResp.books[0].isbn).toBe(isbn);
-        // Verify book added to user profile
+
         const profile = await controllerAPI.getUserProfile(userID);
         const userBooksCollections = profile.books.map((book: { isbn: string }) => book.isbn);
         expect(userBooksCollections).toContain(isbn);
@@ -21,16 +21,13 @@ test.describe('Bookstore API Positive Tests', () => {
 
     test('TC003 - [POST] Successful in adding multiple books', async ({ controllerAPI }) => {
         const bookTitles = ['Git Pocket Guide','Understanding ECMAScript 6', 'Speaking JavaScript'];
-        // Register a new user
+
         const { userID } = await controllerAPI.registerUser();
-        // Get ISBNs for the specified book titles
         const isbns = await controllerAPI.getBooksISBN(bookTitles);
-        // Add the books to the user's collection
         const addBooksResp = await controllerAPI.addBooks(userID, isbns!);
-        // Verify the added books
         const actualIsbns = addBooksResp.books.map((b: { isbn: string }) => b.isbn);
         expect(actualIsbns).toEqual(expect.arrayContaining(isbns!));
-        // Verify books added to user profile
+        
         const profile = await controllerAPI.getUserProfile(userID);
         const userBooksCollections = profile.books.map((book: { isbn: string }) => book.isbn);
         expect(userBooksCollections).toEqual(expect.arrayContaining(isbns));

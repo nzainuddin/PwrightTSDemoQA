@@ -1,5 +1,4 @@
 import { Locator, type Page, request } from '@playwright/test';
-import { BookStoreAPI } from '../../api/BookStoreAPI';
 
 export class ProfilePage {
     private readonly page: Page;

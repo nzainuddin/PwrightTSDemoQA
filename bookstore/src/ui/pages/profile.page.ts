@@ -2,12 +2,14 @@ import { Locator, type Page, request } from '@playwright/test';
 
 export class ProfilePage {
     private readonly page: Page;
+    readonly usernameLbl: Locator;
     readonly deleteAccButton: Locator;
     readonly confirmationDeleteAccModal: Locator;
     readonly okDeleteAccButton: Locator;
 
     constructor(page: Page) {
        this.page = page;
+       this.usernameLbl = page.locator('#userName-value');
        this.deleteAccButton = page.getByRole('button', { name: 'Delete Account' });
        this.confirmationDeleteAccModal = page.locator('//*[starts-with(@class,"modal")][text()="Do you want to delete your account?"]');
        this.okDeleteAccButton = page.getByRole('button', { name: 'OK'});

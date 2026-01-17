@@ -4,6 +4,7 @@ import { LoginPage as LoginPage } from '../ui/pages/login.page';
 import { ProfilePage } from '../ui/pages/profile.page';
 import dotenv from 'dotenv';
 import path from 'path';
+import { RegisterPage } from '../ui/pages/register.page';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -12,6 +13,7 @@ type CustomFixtures = {
   apiAccount: { username: string; token: string };
   userLogin: ProfilePage;
   pages: {
+    registerPage: RegisterPage;
     loginPage: LoginPage;
     profilePage: ProfilePage;
   };
@@ -32,6 +34,7 @@ export const test = base.extend<CustomFixtures>({
 
   pages: async ({ page }, use) => {
     await use({
+      registerPage: new RegisterPage(page),
       loginPage: new LoginPage(page),
       profilePage: new ProfilePage(page),
     })

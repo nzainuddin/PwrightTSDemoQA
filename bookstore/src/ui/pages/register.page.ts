@@ -8,6 +8,7 @@ export class RegisterPage {
     readonly passwordInput: Locator;
     readonly captchaCheckbox: Locator;
     readonly registerButton: Locator;
+    readonly backToLoginButton: Locator;
 
 
     constructor(page: Page) {
@@ -18,6 +19,7 @@ export class RegisterPage {
        this.passwordInput = page.locator('input#password');
        this.captchaCheckbox = page.locator('.recaptcha-checkbox-border');
        this.registerButton = page.locator('button#register');
+       this.backToLoginButton = page.getByRole('button', { 'name': 'Back to Login' });
     }
 
     async register(firstname: string, lastname: string, username: string, password: string) {
@@ -27,5 +29,6 @@ export class RegisterPage {
         await this.passwordInput.fill(password);
         await this.captchaCheckbox.click();
         await this.registerButton.click();
+        await this.backToLoginButton.click();
     }
 }

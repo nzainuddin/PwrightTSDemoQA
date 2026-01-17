@@ -5,12 +5,14 @@ export class LoginPage {
     readonly userNameInput: Locator;
     readonly passwordInput: Locator;
     readonly loginButton: Locator;
+    readonly newUserButton: Locator;
 
     constructor(page: Page) {
        this.page = page;
        this.userNameInput = page.locator('input#userName');
        this.passwordInput = page.locator('input#password');
        this.loginButton = page.locator('button#login');
+       this.newUserButton = page.getByRole('button', { 'name' : 'New User' });
     }
 
     async login(username: string, password: string) {
@@ -21,5 +23,9 @@ export class LoginPage {
         await this.page.waitForURL('/profile');
     }
 
+    async navigateToRegisterPage() {
+        await this.page.goto('/login');
+        await this.newUserButton.click();
+    }
     
 }
